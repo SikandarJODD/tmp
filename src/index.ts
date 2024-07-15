@@ -19,7 +19,7 @@ const main = async () => {
 					yes: {
 						run: async ({ dir, error }) => {
 							// await execa({ cwd: dir })`npx @svelte-add/tailwindcss@latest`;
-							await execa("npx", ["@svelte-add/tailwindcss@latest", "--typography", "false"], {
+							await execa("npx", ["@svelte-add/tailwindcss@latest", '--skip-preconditions', 'true',"--typography", "false"], {
 								cwd: dir,
 							}).catch(err => error(err));
 							return [
