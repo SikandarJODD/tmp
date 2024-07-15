@@ -13,7 +13,7 @@ const main = async () => {
 			{
 				name: 'SvelteKit',
 				// we have to pass it this way so that it resolves correctly in production
-				path: util.relative('templates/code', import.meta.url),
+				path: util.relative('../templates/code', import.meta.url),
 				flag: 'sveltekit',
 				prompts: [
 					{
@@ -29,7 +29,7 @@ const main = async () => {
 										kind: 'confirm',
 										message: 'Would you like to Install Tailwind CSS Framework',
 										yes: {
-											run: async ({ dir }): Promise<Prompt[]> => {
+											run: async (): Promise<Prompt[]> => {
 												return [
 													{
 														kind: 'select',
@@ -83,7 +83,7 @@ const main = async () => {
 						yes: {
 							run: async ({ dir }) => {
 								await execa({ cwd: dir })`npm install @supabase/supabase-js`;
-								let dbfile = fs.readFile('./src/db.ts', 'utf8', (err, data) => {
+								let dbfile = fs.readFile(util.relative('./db.ts', import.meta.url), 'utf8', (err, data) => {
 									if (err) {
 										console.error(err)
 										return
@@ -92,7 +92,7 @@ const main = async () => {
 									fs.writeFileSync(file, data);
 								});
 								let file = path.join(dir, '/.env');
-								let envCode = await fs.readFileSync('./src/envCode.txt');
+								let envCode = await fs.readFileSync(util.relative('./envcode.txt', import.meta.url));
 								fs.writeFileSync(file,envCode);
 							},
 							startMessage: 'Installing Supabase',
