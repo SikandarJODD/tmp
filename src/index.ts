@@ -17,11 +17,11 @@ const main = async () => {
 					kind: "confirm",
 					message: "Would you like to install Tailwind CSS",
 					yes: {
-						run: async ({ dir }) => {
+						run: async ({ dir, error }) => {
 							// await execa({ cwd: dir })`npx @svelte-add/tailwindcss@latest`;
 							await execa("npx", ["@svelte-add/tailwindcss@latest", "--typography", "false"], {
 								cwd: dir,
-							});
+							}).catch(err => error(err));
 							return [
 								{
 									kind: "confirm",
