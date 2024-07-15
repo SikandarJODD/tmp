@@ -1,7 +1,7 @@
 {
   "name": "bhide",
   "description": "svelte template includes ts, Tailwind CSS, Daisy Ui, shadcn, and supabase",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "author": "sikandar_bhide",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",

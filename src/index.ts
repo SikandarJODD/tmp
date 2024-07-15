@@ -13,7 +13,7 @@ const main = async () => {
 			{
 				name: 'SvelteKit',
 				// we have to pass it this way so that it resolves correctly in production
-				path: util.relative('templates/code', import.meta.url),
+				path: util.relative('../templates/code', import.meta.url),
 				flag: 'sveltekit',
 				prompts: [
 					{
@@ -21,9 +21,44 @@ const main = async () => {
 						message: 'Would you like to install Tailwind CSS',
 						yes: {
 							run: async ({ dir }): Promise<Prompt[]> => {
-								// await execa({ cwd: dir })`npx @svelte-add/tailwindcss@latest`;
-								const { stdout } = await execa('npx', ['@svelte-add/tailwindcss@latest', '--typography', 'false'], { cwd: dir });
-								console.log(stdout, 'output');
+								await execa({ cwd: dir })`npm install -D tailwindcss postcss autoprefixer`;
+								await execa({ cwd: dir })`npx tailwindcss init -p`;
+								let file = path.join(dir, '/svelte.config.js');
+								fs.writeFileSync(file, `import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+  kit: {
+    adapter: adapter()
+  },
+  preprocess: vitePreprocess()
+};
+export default config;
+`)
+								// replate tailwind config file with the following code
+								let pathtoTailwind = path.join(dir, 'tailwind.config.js');
+								console.log(pathtoTailwind,'Path');
+								let dbfile = fs.readFile(pathtoTailwind, 'utf8', (err, data) => {
+									if (err) {
+										console.error(err)
+										return
+									}
+									data = data.replace(/content: \[\]/, `content: ['./src/**/*.{html,js,svelte,ts}'],`);
+									fs.writeFileSync(pathtoTailwind, data);
+								});
+								let appcss = path.join(dir, '/src/app.css');
+								fs.writeFileSync(appcss, `@tailwind base;
+@tailwind components;
+@tailwind utilities;`);
+								// create layout.svelte inside src/routes
+								let layout = path.join(dir, 'src/routes/+layout.svelte');
+								fs.writeFileSync(layout, `<script>
+  import "../app.css";
+</script>
+
+<slot />`);
+								// const { stdout } = await execa('npx', ['@svelte-add/tailwindcss@latest', '--typography', 'false'], { cwd: dir });
+								// console.log(stdout, 'output');
 								return [
 									{
 										kind: 'confirm',
@@ -40,9 +75,9 @@ const main = async () => {
 															{
 																name: 'daisyui', select: {
 																	run: async ({ dir }) => {
-																		await execa({ cwd: dir })`npm i -D daisyui@latest`;
+																		await execa({ cwd: dir })`npm install daisyui`;
 																		// replace the content of tailwind.config.ts file to require('daisyui') in plugin section
-																		let pathtoTailwind = path.join(dir, 'tailwind.config.ts');
+																		let pathtoTailwind = path.join(dir, 'tailwind.config.js');
 																		let data = fs.readFileSync(pathtoTailwind, 'utf8');
 																		data = data.replace(/plugins: \[\]/, `plugins: [require('daisyui')]`);
 																		fs.writeFileSync(pathtoTailwind, data);
@@ -83,17 +118,20 @@ const main = async () => {
 						yes: {
 							run: async ({ dir }) => {
 								await execa({ cwd: dir })`npm install @supabase/supabase-js`;
-								let dbfile = fs.readFile('./src/db.ts', 'utf8', (err, data) => {
-									if (err) {
-										console.error(err)
-										return
-									}
-									let file = path.join(dir, '/src/lib/db.ts');
-									fs.writeFileSync(file, data);
-								});
-								let file = path.join(dir, '/.env');
-								let envCode = await fs.readFileSync('./src/envCode.txt');
-								fs.writeFileSync(file,envCode);
+								let data = `import { createClient } from '@supabase/supabase-js'
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
+
+export default supabase`;
+								let file = path.join(dir, '/src/lib/db.ts');
+								fs.writeFileSync(file, data);
+								 file = path.join(dir, '/.env');
+								let envCode =`
+VITE_SUPABASE_URL = https://<your_supabase_url>.supabase.co
+VITE_SUPABASE_ANON_KEY = <your_supabase_anon_key>`;
+								fs.writeFileSync(file, envCode);
 							},
 							startMessage: 'Installing Supabase',
 							endMessage: 'Installed Supabase',
