@@ -1,0 +1,59 @@
+{
+  "name": "bhide",
+  "description": "svelte template includes ts, Tailwind CSS, Daisy Ui, shadcn, and supabase",
+  "version": "1.0.1",
+  "author": "sikandar_bhide",
+  "main": "bin.mjs",
+  "bin": "./bin.mjs",
+  "files": [
+    "bin.mjs",
+    "package.json",
+    "package-lock.json",
+    "templates",
+    "dist",
+    ".gitignore"
+  ],
+  "publishConfig": {
+    "scripts": {},
+    "devDependencies": {}
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./*",
+        "./index.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "start": "unbuild && node bin.mjs",
+    "build": "unbuild"
+  },
+  "keywords": [
+    "svelte",
+    "template",
+    "daisyui",
+    "shadcn",
+    "supabase",
+    "svelte_template",
+    "sikandar_bhide"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "execa": "^9.3.0",
+    "fs-extra": "^11.2.0",
+    "template-factory": "^0.1.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "typescript": "^5.5.3",
+    "unbuild": "^2.0.0"
+  }
+}
