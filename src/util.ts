@@ -5,7 +5,7 @@ import path from 'node:path';
 /** Allows you to remove dependency without creating node_modules */
 export const removeDependency = async (
     packageName: string,
-    { pm: _, dir }: { pm: string; dir: string }
+    { dir }: { dir: string }
 ) => {
     const file = path.join(dir, 'package.json');
 
