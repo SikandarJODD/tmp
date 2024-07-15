@@ -97,7 +97,7 @@ const main = async () => {
 							fs.copyFileSync(dbPath, path.join(dir, "src/lib/db.ts"));
 
 							const envPath = util.relative(
-								"../templates/sveltekit/template-files/supabase/.env",
+								"../templates/sveltekit/template-files/supabase/env.txt",
 								import.meta.url
 							);
 
